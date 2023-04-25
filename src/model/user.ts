@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
 const isLink = function isLink(val: string) {
     const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
@@ -10,14 +10,14 @@ const isEmail = function isEmail(val: string) {
     return regex.test(val);
 }
 
-type User = {
+export type User = {
     name: string;
     email: string;
     password: string;
-    avatar: {
-        type: string, 
-    }
+    avatar: string;
 }
+
+export type UserDocument = Document & User;
 
 const UserSchema = new Schema<User>({
     name: { type: String, required: true },
@@ -26,4 +26,4 @@ const UserSchema = new Schema<User>({
     avatar: { type: String, required: true, validate: [isLink, 'Please enter a valid link'] },
 });
 
-export default model<User>('User', UserSchema);
+export default model<UserDocument>('User', UserSchema);
