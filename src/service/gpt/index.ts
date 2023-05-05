@@ -29,5 +29,5 @@ const getChatCompletion = async ( messages  :  Array<ChatCompletionRequestMessag
         return '';
     }
 }
- 
+
 export { getPrompt, getChatCompletion };

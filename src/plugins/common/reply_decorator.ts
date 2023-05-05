@@ -13,6 +13,7 @@ declare module 'fastify' {
 }
 
 const cookieOptions = {
+    path: '/',
     httpOnly: true,
     domain: 'localhost',
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
@@ -29,12 +30,11 @@ const replyDecorator = fp(async (fastify, _opts) => {
             timeToLive: 1000 * 60 * 60 * 24 * 7,
         });
         await authToken.save();
-        console.log('authToken', payload, authToken);
-        await this.setCookie('token', token, cookieOptions).code(200).send(payload);
+        await this.setCookie('authorization', token, cookieOptions).code(200).send(payload);
     });
 
     fastify.decorateReply('logout', async function () {
-        void this.clearCookie('token', cookieOptions).code(200).send({ message: 'Logged out' });
+        void this.clearCookie('authorization', cookieOptions).code(200).send({ message: 'Logged out' });
     });
 });
 

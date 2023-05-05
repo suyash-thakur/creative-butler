@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import { FastifyInstance, FastifyRequest, fastify } from 'fastify';
 import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import type { FastifyRequest as IncomingMessage, FastifyReply as ServerResponse } from 'fastify';
@@ -80,12 +81,17 @@ const getPrompt = async () => {
 const routes: FastifyPluginAsync<FastifyPluginOptions> = async (
 	fastify: FastifyInstance
 ) => {
-	// await fastify.register(userDecorator);
-	fastify.get('/projects/:id', getProjectHandler);
-	fastify.post('/projects', createProjectHandler);
-	fastify.put('/projects/:id', updateProjectHandler);
-	fastify.delete('/projects/:id', deleteProjectHandler);
-	fastify.get('/prompt', getPrompt);
+
+
+	fastify.register(async (fastify) => {
+		fastify.register(userDecorator);
+		fastify.get('/projects/:id', getProjectHandler);
+		fastify.post('/projects', createProjectHandler);
+		fastify.put('/projects/:id', updateProjectHandler);
+		fastify.delete('/projects/:id', deleteProjectHandler);
+		fastify.get('/prompt', getPrompt);
+	})
+
 };
 
 

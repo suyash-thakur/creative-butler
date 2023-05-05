@@ -29,8 +29,12 @@ const getProjectPromptHandler = async (request: IncomingMessage) => {
 const routes: FastifyPluginAsync<FastifyPluginOptions> = async (
 	fastify: FastifyInstance
 ) => {
-	fastify.get('/sections', getWebsiteSectionsHandler);
-	fastify.post('/projects/:projectId/prompt', getProjectPromptHandler);
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
+	fastify.register(async (fastify) => { 
+		fastify.get('/sections', getWebsiteSectionsHandler);
+		fastify.post('/projects/:projectId/prompt', getProjectPromptHandler);
+	});
+
 }
 
 export default fp(routes);
