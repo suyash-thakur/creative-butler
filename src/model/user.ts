@@ -22,7 +22,7 @@ export type UserDocument = Document & User;
 const UserSchema = new Schema<User>({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, validate: [isEmail, 'Please enter a valid email']},
-    password: { type: String, required: true },
+    password: { type: String },
     avatar: { type: String, required: true, validate: [isLink, 'Please enter a valid link'] },
 });
 

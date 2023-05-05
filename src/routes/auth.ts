@@ -16,20 +16,20 @@ declare module 'fastify' {
 	}
 
 	interface Response {
-		loginCallback: (user: UserDocument, payload: unknown) => void;
+		loginCallback: unknown;
 	}
 }
 
 
 const routes: FastifyPluginAsync<FastifyPluginOptions> = async (
 	fastify: FastifyInstance) => {
-	fastify.get('auth/google/login', async (_request: IncomingMessage, _reply: Response) => {
+	fastify.get('/auth/google/login', async (_request: IncomingMessage, _reply: Response) => {
 		const { googleOAuth2 } = fastify;
 		const url = googleOAuth2.generateAuthorizationUri(_request);
 		void _reply.redirect(url);
 	});
 
-	fastify.get('auth/google/callback', async (_request: IncomingMessage, _reply: Response) => {
+	fastify.get('/auth/google/callback', async (_request: IncomingMessage, _reply: Response) => {
 		let oauthToken = await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
 			_request
 		);
@@ -51,19 +51,17 @@ const routes: FastifyPluginAsync<FastifyPluginOptions> = async (
 			const { data } = await axios(config) as AxiosResponse<{ email: string, name: string, picture: string }>;
 			user = await User.findOne({ email: data.email });
 			if (!user) {
-				user = await new User({
-					email: data.email,
+				const userData = new User({
 					name: data.name,
-					avatar: data.picture,
-				}).save();
-
+					email: data.email,
+					avatar: 'www.random.com'
+				})
+				user = await userData.save();
 			}
 		} catch (error) {
 			console.log(error);
 		}
-
 		if (!user) throw new Error('User not found');
-
 		return _reply.loginCallback(user, { message: 'Logged in successfully' });
 	});
 };

@@ -1,7 +1,7 @@
 import fp from 'fastify-plugin';
-import type { User as User } from '../model/user';
-import generateKey from '../helper/generateKey';
-import AuthToken from '../model/authToken';
+import type { User as User } from '../../model/user';
+import generateKey from '../../helper/generateKey';
+import AuthToken from '../../model/authToken';
 import { Schema } from 'mongoose';
 
 type UserType = User & { _id: Schema.Types.ObjectId };
@@ -13,10 +13,9 @@ declare module 'fastify' {
 }
 
 const cookieOptions = {
-    domain: 'localhost',
-    path: '/',
-    signed: true,
     httpOnly: true,
+    domain: 'localhost',
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     secure: false,
 };
 
@@ -30,7 +29,8 @@ const replyDecorator = fp(async (fastify, _opts) => {
             timeToLive: 1000 * 60 * 60 * 24 * 7,
         });
         await authToken.save();
-        void this.setCookie('token', token, cookieOptions).code(200).send(payload);
+        console.log('authToken', payload, authToken);
+        await this.setCookie('token', token, cookieOptions).code(200).send(payload);
     });
 
     fastify.decorateReply('logout', async function () {

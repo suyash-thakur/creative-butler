@@ -3,7 +3,7 @@ import { FastifyPluginAsync, FastifyPluginOptions } from 'fastify';
 import type { FastifyRequest as IncomingMessage, FastifyReply as ServerResponse } from 'fastify';
 import { getProjectPrompt } from '../service/gpt/prompt';
 import fp from 'fastify-plugin';
-import userDecorator from '../middleware/decorate_user';
+import userDecorator from '../plugins/decorate_user';
 
 import Project from '../model/project';
 import type { Project as ProjectType } from '../model/project';
@@ -80,7 +80,7 @@ const getPrompt = async () => {
 const routes: FastifyPluginAsync<FastifyPluginOptions> = async (
 	fastify: FastifyInstance
 ) => {
-	await fastify.register(userDecorator);
+	// await fastify.register(userDecorator);
 	fastify.get('/projects/:id', getProjectHandler);
 	fastify.post('/projects', createProjectHandler);
 	fastify.put('/projects/:id', updateProjectHandler);

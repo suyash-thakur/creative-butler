@@ -3,7 +3,7 @@ import User from '../model/user'
 import type { User as UserType } from '../model/user'
 
 type User = UserType & { _id: string }
-export default fp(async (fastify) => {
+const decorateUserPlugin = fp(async (fastify) => {
 
 	fastify.addHook('preHandler', async (request) => {
 		const { userId } = request.params as { userId: string };
@@ -14,3 +14,5 @@ export default fp(async (fastify) => {
 		fastify.decorateRequest('user', user);
 	});
 });
+
+export default decorateUserPlugin;
